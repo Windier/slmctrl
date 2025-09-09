@@ -14,7 +14,7 @@ extern "C" {
 	PLM_API void StartUI(unsigned int number_of_frames);
 	PLM_API void StopUI();
 	PLM_API bool StartSequence(int number_of_frames);
-	PLM_API void SetSLMWindowPos(int width, int height, int monitor, bool windowed);
+	PLM_API void SetSLMWindowPos(int width, int height, int x0, int y0, bool windowed);
 	PLM_API bool CreateHolograms(
 		double* phase,
 		unsigned char* frame,

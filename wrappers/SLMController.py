@@ -2,7 +2,7 @@ import ctypes
 import numpy as np
 
 class SLMController:
-    def __init__(self, MAX_HOLOGRAMS, width, height, dll_path='slmctrl.dll'):
+    def __init__(self, MAX_HOLOGRAMS, width, height, x0, y0, dll_path='slmctrl.dll'):
         """
         Initialize the SLMController to manage a spatial light modulator.
 
@@ -14,12 +14,14 @@ class SLMController:
         self.MAX_HOLOGRAMS = MAX_HOLOGRAMS
         self.N = width
         self.M = height
+        self.x0 = x0
+        self.y0 = y0
 
         # Load the 'SLMctrl' library (assuming it's the Python equivalent of 'slmctrl')
         self.lib = ctypes.CDLL(dll_path)  # Adjust path as needed
 
         # Define function prototypes to match expected library calls
-        self.lib.SetSLMWindowPos.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_bool]
+        self.lib.SetSLMWindowPos.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_bool]
         self.lib.StartUI.argtypes = [ctypes.c_int]
         self.lib.InsertSLMHologram.argtypes = [ctypes.POINTER(ctypes.c_uint8), ctypes.c_int, ctypes.c_int]
         self.lib.SetHologramSequence.argtypes = [ctypes.POINTER(ctypes.c_uint64), ctypes.c_int]
@@ -28,12 +30,10 @@ class SLMController:
         self.lib.SetSLMHologram.argtypes = [ctypes.c_int]
         self.lib.ResetUI.argtypes = []
 
-    def StartUI(self, monitor_id, windowed = False):
+    def StartUI(self, windowed = False):
         """Start the SLM UI on a specified monitor."""
-        if not isinstance(monitor_id, int) or monitor_id < 0:
-            raise ValueError("monitor_id must be a non-negative integer")
-        self.lib.SetSLMWindowPos(self.N, self.M, monitor_id, windowed)
-        self.lib.StartUI(self.MAX_HOLOGRAMS)
+        self.lib.SetSLMWindowPos(self.N, self.M, self.x0, self.y0, windowed)
+        return self.lib.StartUI(self.MAX_HOLOGRAMS)
 
     def InsertHolograms(self, holograms, offset):
         """Insert holograms into the SLM memory."""

@@ -24,7 +24,7 @@ bool GetSecondMonitorRect(RECT& rect)
 			monitorInfo.cbSize = sizeof(MONITORINFO);
 			if (GetMonitorInfo(hMonitor, &monitorInfo))
 			{
-				if (monitorData->monitorIndex == 1)  // We're looking for the second monitor (index 1)
+				if (monitorData->monitorIndex == 2)  // We're looking for the second monitor (index 1)
 				{
 					monitorData->monitorRect = monitorInfo.rcMonitor;
 					return FALSE;  // Stop enumeration after finding the second monitor

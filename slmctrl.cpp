@@ -57,6 +57,8 @@ uint8_t* slm_image_ptr = nullptr;
 std::mutex mutex;
 std::mutex slm_image_mutex;
 int N = 1920 / 4, M = 1080 / 4;
+int slm_x0 = 0;
+int slm_y0 = 0;
 int window_x0 = 0, window_y0 = 0;
 int delay = 200;
 int monitor_id = 0;
@@ -131,11 +133,11 @@ bool StartSequence(int number_of_holograms) {
 int UI()
 {
 
-	RECT monitorRect;
-	if (!GetSecondMonitorRect(monitorRect)) {
-		std::cerr << "Second monitor not found!" << std::endl;
-		return 1;
-	}
+	//RECT monitorRect;
+	//if (!GetSecondMonitorRect(monitorRect)) {
+	//	std::cerr << "Second monitor not found!" << std::endl;
+	//	return 1;
+	//}
 
 	// Create application window
 	// ImGui_ImplWin32_EnableDpiAwareness();
@@ -147,8 +149,8 @@ int UI()
 		wc.lpszClassName,
 		L"slmctrl",
 		WS_POPUP | WS_VISIBLE,
-		monitorRect.left, monitorRect.top,
-		monitorRect.right - monitorRect.left, monitorRect.bottom - monitorRect.top,
+		slm_x0, slm_y0,
+		N, M,
 		nullptr,
 		nullptr,
 		wc.hInstance,
@@ -452,10 +454,11 @@ void StopUI() {
 	return;
 }
 
-void SetSLMWindowPos(int width, int height, int monitor, bool windowed) {
+void SetSLMWindowPos(int width, int height, int x0, int y0, bool windowed) {
 	N = width;
 	M = height;
-	monitor_id = monitor;
+	slm_x0 = x0;
+	slm_y0 = y0;
 	windowed = windowed;
 }
 
