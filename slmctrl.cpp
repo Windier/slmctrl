@@ -178,7 +178,7 @@ int UI()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+	if (show_debug_window) io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
@@ -405,15 +405,18 @@ int UI()
 	return 0;
 }
 
-void StartUI(unsigned int number_of_holograms) {
+void StartUI(unsigned int number_of_holograms, bool debug_window = false) {
 
 	MAX_HOLOGRAMS = number_of_holograms;
 
+	show_debug_window = debug_window;
+
 	if (running) {
 		StopUI();
-		StartUI(number_of_holograms);
+		StartUI(number_of_holograms, debug_window);
 		return;
 	};
+
 
 	running = true;
 	slm_image_ptr = nullptr;

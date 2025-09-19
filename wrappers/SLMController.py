@@ -22,7 +22,7 @@ class SLMController:
 
         # Define function prototypes to match expected library calls
         self.lib.SetSLMWindowPos.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_bool]
-        self.lib.StartUI.argtypes = [ctypes.c_int]
+        self.lib.StartUI.argtypes = [ctypes.c_int, ctypes.c_bool]
         self.lib.InsertSLMHologram.argtypes = [ctypes.POINTER(ctypes.c_uint8), ctypes.c_int, ctypes.c_int]
         self.lib.SetHologramSequence.argtypes = [ctypes.POINTER(ctypes.c_uint64), ctypes.c_int]
         self.lib.StartSequence.argtypes = [ctypes.c_int]
@@ -30,10 +30,10 @@ class SLMController:
         self.lib.SetSLMHologram.argtypes = [ctypes.c_int]
         self.lib.ResetUI.argtypes = []
 
-    def StartUI(self, windowed = False):
+    def StartUI(self, show_debug_window = False, windowed = False):
         """Start the SLM UI on a specified monitor."""
         self.lib.SetSLMWindowPos(self.N, self.M, self.x0, self.y0, windowed)
-        return self.lib.StartUI(self.MAX_HOLOGRAMS)
+        return self.lib.StartUI(self.MAX_HOLOGRAMS, show_debug_window)
 
     def InsertHolograms(self, holograms, offset):
         """Insert holograms into the SLM memory."""
