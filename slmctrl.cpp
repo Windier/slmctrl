@@ -84,7 +84,7 @@ bool windowed = true;
 long long t0 = 0;
 
 bool camera_trigger = false;
-bool show_debug_window = true;
+bool show_debug_window = false;
 
 std::chrono::duration<double> elapsed_content;
 std::chrono::duration<double> elapsed_buffer;
@@ -178,12 +178,12 @@ int UI()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 	io.ConfigDockingWithShift = true; // Enable docking with shift key
-	io.ConfigFlags& ImGuiConfigFlags_ViewportsEnable ? std::cout << "true" << std::endl : std::cout << "false" << std::endl;
+	//io.ConfigFlags& ImGuiConfigFlags_ViewportsEnable ? std::cout << "true" << std::endl : std::cout << "false" << std::endl;
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
