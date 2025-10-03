@@ -31,7 +31,7 @@ class SLMController:
         self.lib.ResetUI.argtypes = []
 
     def StartUI(self, show_debug_window = False, windowed = False):
-        """Start the SLM UI on a specified monitor."""
+        """Start the SLM UI."""
         self.lib.SetSLMWindowPos(self.N, self.M, self.x0, self.y0, windowed)
         return self.lib.StartUI(self.MAX_HOLOGRAMS, show_debug_window)
 
