@@ -184,6 +184,7 @@ int UI()
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 	io.ConfigDockingWithShift = true; // Enable docking with shift key
 	//io.ConfigFlags& ImGuiConfigFlags_ViewportsEnable ? std::cout << "true" << std::endl : std::cout << "false" << std::endl;
+	//
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();

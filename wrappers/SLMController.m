@@ -59,7 +59,7 @@ function slm = SLMController(MAX_HOLOGRAMS, width, height, x0, y0, dll_path)
         windowed = logical(windowed);
 
         calllib('slmctrl', 'SetSLMWindowPos', slm.N, slm.M, slm.x0, slm.y0, windowed);
-        calllib('slmctrl', 'StartUI', slm.MAX_HOLOGRAMS, show_debug_window);
+        status = calllib('slmctrl', 'StartUI', slm.MAX_HOLOGRAMS, show_debug_window);
     end
 
     function res = InsertHolograms(holograms, offset)
