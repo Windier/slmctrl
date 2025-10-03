@@ -14,8 +14,8 @@ dll_path = fullfile('..', 'bin', 'slmctrl.dll');
 slm = SLMController(MAX_HOLOGRAMS, N, M, x0, y0, dll_path);
 
 %% Start the UI in windowed mode without the debug viewport
-debug_window = true;
-windowed = false;
+debug_window = false;
+windowed = true;
 slm.StartUI(debug_window, windowed);
 
 %% Test 1: Insert and display a single random hologram
