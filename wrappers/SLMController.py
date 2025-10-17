@@ -2,7 +2,7 @@ import ctypes
 import numpy as np
 
 class SLMController:
-    def __init__(self, MAX_HOLOGRAMS, width, height, x0, y0, dll_path='slmctrl.dll'):
+    def __init__(self, MAX_HOLOGRAMS, width, height, x0, y0, pixelSize = 8.4e-6, dll_path='slmctrl.dll'):
         """
         Initialize the SLMController to manage a spatial light modulator.
 
@@ -14,8 +14,14 @@ class SLMController:
         self.MAX_HOLOGRAMS = MAX_HOLOGRAMS
         self.N = width
         self.M = height
+        self.width = width
+        self.height = height
+        self.pixelSize = pixelSize  # Pixel size in meters
         self.x0 = x0
         self.y0 = y0
+        self.x = np.arange(width) * pixelSize - (width * pixelSize / 2)
+        self.y = np.arange(height) * pixelSize - (height * pixelSize / 2)
+        self.X, self.Y = np.meshgrid(self.x, self.y)
 
         # Load the 'SLMctrl' library (assuming it's the Python equivalent of 'slmctrl')
         self.lib = ctypes.CDLL(dll_path)  # Adjust path as needed
