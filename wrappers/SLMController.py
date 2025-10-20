@@ -11,7 +11,7 @@ class SLMController:
             width (int): Width of the SLM display in pixels.
             height (int): Height of the SLM display in pixels.
         """
-        self.MAX_HOLOGRAMS = MAX_HOLOGRAMS
+        self.max_holograms = MAX_HOLOGRAMS
         self.N = width
         self.M = height
         self.width = width
@@ -39,7 +39,7 @@ class SLMController:
     def StartUI(self, windowed = False):
         """Start the SLM UI on a specified monitor."""
         self.lib.SetSLMWindowPos(self.N, self.M, self.x0, self.y0, windowed)
-        return self.lib.StartUI(self.MAX_HOLOGRAMS)
+        return self.lib.StartUI(self.max_holograms)
 
     def InsertHolograms(self, holograms, offset):
         """Insert holograms into the SLM memory."""
@@ -50,9 +50,12 @@ class SLMController:
         if not isinstance(offset, int) or offset < 0:
             raise ValueError("offset must be a non-negative integer")
         
+        print("Inserting holograms at offset:", offset)
         holograms_ptr = holograms.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8))
         num_holograms = holograms.shape[2] if holograms.ndim == 3 else 1
-        return self.lib.InsertSLMHologram(holograms_ptr, num_holograms, offset)
+        ok = self.lib.InsertSLMHologram(holograms_ptr, num_holograms, offset)
+        print("InsertSLMHologram returned:", ok)
+        return ok
 
     def SetHologramSequence(self, sequence):
         """Set the sequence of holograms to display."""
