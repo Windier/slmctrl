@@ -132,7 +132,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(SolutionDir)libs;$(DXSDK_DIR)/Lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -174,21 +174,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\helpers.h" />
-    <ClInclude Include="include\imgui\imgui_impl_dx11.h" />
-    <ClInclude Include="include\imgui\imgui_impl_win32.h" />
-    <ClInclude Include="include\SLM\SLM.h" />
-    <ClInclude Include="slmctrl.h" />
     <ClInclude Include="include\imgui\imconfig.h" />
     <ClInclude Include="include\imgui\imgui.h" />
-    <ClInclude Include="include\imgui\imgui_impl_glfw.h" />
-    <ClInclude Include="include\imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="include\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="include\imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="include\imgui\imgui_impl_win32.h" />
     <ClInclude Include="include\imgui\imgui_internal.h" />
     <ClInclude Include="include\imgui\implot.h" />
     <ClInclude Include="include\imgui\implot_internal.h" />
     <ClInclude Include="include\imgui\imstb_rectpack.h" />
     <ClInclude Include="include\imgui\imstb_textedit.h" />
     <ClInclude Include="include\imgui\imstb_truetype.h" />
+    <ClInclude Include="include\SLM\SLM.h" />
+    <ClInclude Include="slmctrl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\imgui\imgui.cpp" />
@@ -198,16 +195,10 @@
     <ClCompile Include="include\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="include\imgui\implot.cpp" />
+    <ClCompile Include="include\imgui\implot_demo.cpp" />
+    <ClCompile Include="include\imgui\implot_items.cpp" />
     <ClCompile Include="slmctrl.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="include\imgui\implot.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="include\imgui\implot_demo.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="include\imgui\implot_items.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>

@@ -17,6 +17,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_win32.h"
 #include "imgui/imgui_impl_dx11.h"
+#include "implot.h"
 #include <d3d11.h>
 #include <tchar.h>
 
@@ -177,8 +178,10 @@ int UI()
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
+	ImPlot::CreateContext();
+
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+	if (show_debug_window) io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
@@ -329,8 +332,34 @@ int UI()
 		slm_image_ptr = hologram_set.data()
 			+ hologram_order[hologram_index % MAX_HOLOGRAMS] * hologram_elements;
 
+		// Update texture for both main display and debug plot
+		if (slm_image_ptr != nullptr) {
+			D3D11_MAPPED_SUBRESOURCE mappedResource;
+			HRESULT hr = g_pd3dDeviceContext->Map(pTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			if (SUCCEEDED(hr)) {
+				uint8_t* dst = (uint8_t*)mappedResource.pData;
+				uint8_t* src = slm_image_ptr;
+				
+				// Convert grayscale to RGBA
+				for (int y = 0; y < M; y++) {
+					for (int x = 0; x < N; x++) {
+						uint8_t gray = src[y * N + x];
+						dst[(y * N + x) * 4 + 0] = gray; // R
+						dst[(y * N + x) * 4 + 1] = gray; // G  
+						dst[(y * N + x) * 4 + 2] = gray; // B
+						dst[(y * N + x) * 4 + 3] = 255;  // A
+					}
+				}
+				
+				g_pd3dDeviceContext->Unmap(pTexture, 0);
+			}
+		}
+
 		// SLM hologram window
 		SLM::ImagescSLM("SLM", slm_image_ptr, data_texture_srv, g_pd3dDevice, g_pd3dDeviceContext, io, N, M, &mutex, window_x0, window_y0);
+
+
+
 
 		ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Once);
 
@@ -391,6 +420,7 @@ int UI()
 	// Cleanup
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
+	ImPlot::DestroyContext();
 	ImGui::DestroyContext();
 
 	CleanupDeviceD3D();
@@ -405,7 +435,7 @@ int UI()
 	return 0;
 }
 
-void StartUI(unsigned int number_of_holograms) {
+void StartUI(unsigned int number_of_holograms, bool debug_window = false) {
 
 	MAX_HOLOGRAMS = number_of_holograms;
 
@@ -422,6 +452,9 @@ void StartUI(unsigned int number_of_holograms) {
 	std::fill(hologram_set.begin(), hologram_set.end(), 255);
 
 	hologram_order.resize(MAX_HOLOGRAMS);
+	for (unsigned int i = 0; i < MAX_HOLOGRAMS; i++) {
+		hologram_order[i] = i;
+	};
 
 #ifndef SLM_DEBUG
 	std::cout << "Starting UI thread" << std::endl;
@@ -691,35 +724,39 @@ void DebugWindow(
 	ImGui::Text("Framerate needs to match SLM's");
 
 
-#ifndef INCLUDE_LIGHTCRAFTER_WRAPPERS
-	ImGui::SeparatorText("Warning");
-	ImGui::Text("- This version does not support commanding the SLM to Play/Stop the sequence display");
-	ImGui::Text("- To enable this feature, follow the Wiki entry on this topic");
-	ImGui::Separator();
-#else
-	ImGui::SeparatorText("SLM Status");
-	if (SLM::IsConnected() == false) {
-		SLM::Open();
-		SLM::GetVersion();
-	};
-	Status(slm_connected);
-	slm_connected = SLM::IsConnected();
-	ImGui::Text("%d.%d.%d", (SLM::App_ver >> 24), ((SLM::App_ver << 8) >> 24), ((SLM::App_ver << 16) >> 16));
-	ImGui::BeginDisabled(!slm_connected);
-	Status(slm_is_displaying);
-	if (ImGui::Button("Start")) {
-		SLM::Play();
-		slm_is_displaying = true;
-	};
-	ImGui::SameLine();
-	if (ImGui::Button("Stop")) {
-		SLM::Stop();
-		slm_is_displaying = false;
-	};
-	ImGui::EndDisabled();
-	ImGui::Separator();
-#endif
 
+	// bmin = [1.0, 1.0]
+	// 	bmax = [float(data.shape[1]), float(data.shape[0])]  # width, height
+
+	// 	if implot.begin_plot(id, ImVec2(plot_width, plot_height)) :
+	// 		# Set up axes with equal aspect ratio
+	// 		implot.setup_axes("X", "Y")
+	// 		implot.setup_axes_limits(bmin[0], bmax[0], bmin[1], bmax[1])
+
+	// 		tex_ref = imgui.ImTextureRef(tex_id)
+	// 		implot.plot_image("image" + id, tex_ref,
+	// 			bounds_min = implot.Point(bmin[0], bmin[1]),
+	// 			bounds_max = implot.Point(bmax[0], bmax[1]),
+	// 			uv0 = ImVec2(0.0, 0.0),
+	// 			uv1 = ImVec2(1.0, 1.0))
+
+	// 		implot.end_plot()
+	// 		return True
+	ImGui::SeparatorText("Frame data");
+	if (ImGui::TreeNode("Frame on display")) {
+		static ImVec2 ulim = ImVec2(0.0f, 1.0f);
+		static ImVec2 vlim = ImVec2(0.0f, 1.0f);
+		ImGui::Image((void*)data_texture_srv, ImVec2((float)N / 4, (float)M / 4), ImVec2(ulim.x, vlim.x), ImVec2(ulim.y, vlim.y));
+		ImVec2 pos = ImGui::GetCursorScreenPos();
+		ImGui::TreePop();
+	};
+	//if (ImPlot::BeginPlot("SLM Hologram Debug Plot", ImVec2(350, 350 * (float(M) / float(N))), ImPlotFlags_Equal))
+	//{
+	//	ImPlot::SetupAxesLimits(0, N, 0, M);
+	//	ImPlot::SetupAxes("X", "Y");
+	//	ImPlot::PlotImage("SLM Hologram", data_texture_srv, ImVec2(N, M), ImVec2(0, 0), ImVec2(1, 1));
+	//	ImPlot::EndPlot();
+	//}
 
 	//Status(first_hologram_trigger);
 	ImGui::Text("Holograms to play: %d/%d", holograms_to_play, holograms_in_sequence);

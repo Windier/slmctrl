@@ -11,7 +11,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	PLM_API void StartUI(unsigned int number_of_frames);
+	PLM_API void StartUI(unsigned int number_of_frames, bool show_debug_window);
 	PLM_API void StopUI();
 	PLM_API bool StartSequence(int number_of_frames);
 	PLM_API void SetSLMWindowPos(int width, int height, int x0, int y0, bool windowed);

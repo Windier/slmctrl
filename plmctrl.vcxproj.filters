@@ -24,19 +24,22 @@
     <ClInclude Include="slmctrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SLM\SLM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="include\imgui\imconfig.h">
       <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="include\imgui\imgui.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="include\imgui\imgui_impl_glfw.h">
+    <ClInclude Include="include\imgui\imgui_impl_dx11.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="include\imgui\imgui_impl_opengl3.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="include\imgui\imgui_impl_opengl3_loader.h">
+    <ClInclude Include="include\imgui\imgui_impl_win32.h">
       <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="include\imgui\imgui_internal.h">
@@ -57,36 +60,9 @@
     <ClInclude Include="include\imgui\imstb_truetype.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="include\imgui\imgui_impl_dx11.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\imgui\imgui_impl_win32.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\helpers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SLM\SLM.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="slmctrl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\imgui\implot_demo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\imgui\implot.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\imgui\implot_items.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\imgui\imgui_impl_dx11.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\imgui\imgui_impl_win32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="include\imgui\imgui.cpp">
@@ -98,10 +74,25 @@
     <ClCompile Include="include\imgui\imgui_draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="include\imgui\imgui_widgets.cpp">
+    <ClCompile Include="include\imgui\imgui_impl_dx11.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui_impl_win32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="include\imgui\imgui_tables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui_widgets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\implot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\implot_demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\implot_items.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
