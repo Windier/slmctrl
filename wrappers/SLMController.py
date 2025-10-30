@@ -31,7 +31,8 @@ class SLMController:
         self.lib.StartUI.argtypes = [ctypes.c_int, ctypes.c_bool]
         self.lib.InsertSLMHologram.argtypes = [ctypes.POINTER(ctypes.c_uint8), ctypes.c_int, ctypes.c_int]
         self.lib.SetHologramSequence.argtypes = [ctypes.POINTER(ctypes.c_uint64), ctypes.c_int]
-        self.lib.StartSequence.argtypes = [ctypes.c_int]
+        self.lib.StartSequence.argtypes = [ctypes.c_int, ctypes.c_bool]
+        self.lib.StopSequence.argtypes = []
         self.lib.StopUI.argtypes = []
         self.lib.SetSLMHologram.argtypes = [ctypes.c_int]
         self.lib.ResetUI.argtypes = []
@@ -52,7 +53,7 @@ class SLMController:
         
         print("Inserting holograms at offset:", offset)
         holograms_ptr = holograms.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8))
-        num_holograms = holograms.shape[2] if holograms.ndim == 3 else 1
+        num_holograms = holograms.shape[0] if holograms.ndim == 3 else 1
         ok = self.lib.InsertSLMHologram(holograms_ptr, num_holograms, offset)
         print("InsertSLMHologram returned:", ok)
         return ok
@@ -64,11 +65,16 @@ class SLMController:
         sequence_ptr = sequence.ctypes.data_as(ctypes.POINTER(ctypes.c_uint64))
         self.lib.SetHologramSequence(sequence_ptr, len(sequence))
 
-    def StartSequence(self, holograms_to_display):
+    def StartSequence(self, holograms_to_display, continuous_mode=False):
         """Start displaying the hologram sequence."""
         if not isinstance(holograms_to_display, int) or holograms_to_display <= 0:
             raise ValueError("holograms_to_display must be a positive integer")
-        return self.lib.StartSequence(holograms_to_display)
+        return self.lib.StartSequence(holograms_to_display, continuous_mode)
+    
+    def StopSequence(self):
+        """Stop displaying the hologram sequence."""
+        self.lib.StopSequence()
+
 
     def StopUI(self):
         """Stop the SLM UI."""

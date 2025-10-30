@@ -80,6 +80,7 @@ bool slm_is_displaying = false;
 bool sequence_active = false;
 bool continuous_mode = false;
 int64_t hologram_index = 0;
+int64_t hologram_sequence_offset = 0;
 int64_t buffer_index = -1;
 bool windowed = true;
 long long t0 = 0;
@@ -116,17 +117,23 @@ bool Cleanup() {
 	return true;
 }
 
-bool StartSequence(int number_of_holograms) {
+bool StartSequence(int number_of_holograms, bool continuous = true) {
 
 	if (number_of_holograms > MAX_HOLOGRAMS) {
 		return false;
 	};
 
+	continuous_mode = continuous;
 	holograms_to_play = number_of_holograms;
 	holograms_in_sequence = number_of_holograms;
 	sequence_active = true;
 	first_hologram_trigger = true;
 
+	return true;
+}
+
+bool StopSequence() {
+	holograms_to_play = -1;
 	return true;
 }
 
@@ -238,7 +245,7 @@ int UI()
 	while (running && !done)
 	{
 
-		if (holograms_to_play < 0 && sequence_active) {
+		if (!continuous_mode && (holograms_to_play < 0 && sequence_active)) {
 			std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 			// Pause Playing the sequence.
 
@@ -397,9 +404,6 @@ int UI()
 			t0 = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
 			std::cout << "FIRST FRAME TRIGGER" << std::endl;
 		};
-		if (slm_mode == SLM_PLAYING) {
-			std::cout << "Buffer Index on slmctrl: " << buffer_index << std::endl;
-		}
 
 		end = std::chrono::high_resolution_clock::now();
 		elapsed_buffer = end - start;
@@ -409,9 +413,13 @@ int UI()
 
 		// first_hologram_trigger is a variable to know exactly that the first hologram was already sent to the GPU buffer queue. 
 		if (holograms_to_play >= 0 && !(first_hologram_trigger)) {
+			if (continuous_mode && (hologram_index + 1 == holograms_in_sequence)) {
+				hologram_index = 0;
+				holograms_to_play = holograms_in_sequence + 1;
+			};
+			holograms_to_play--;
 			hologram_index++;
 			hologram_index = clamp(hologram_index, 0, MAX_HOLOGRAMS - 1);
-			holograms_to_play--;
 		};
 
 	};
