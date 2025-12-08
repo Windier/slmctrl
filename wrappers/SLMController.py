@@ -1,5 +1,6 @@
 import ctypes
 import numpy as np
+import cupy as cp
 
 class SLMController:
     def __init__(self, MAX_HOLOGRAMS, width, height, x0, y0, pixelSize = 8.4e-6, dll_path='slmctrl.dll'):
@@ -21,7 +22,7 @@ class SLMController:
         self.y0 = y0
         self.x = np.arange(width) * pixelSize - (width * pixelSize / 2)
         self.y = np.arange(height) * pixelSize - (height * pixelSize / 2)
-        self.X, self.Y = np.meshgrid(self.x, self.y)
+        self.X, self.Y = cp.meshgrid(cp.array(self.x), cp.array(self.y))
 
         # Load the 'SLMctrl' library (assuming it's the Python equivalent of 'slmctrl')
         self.lib = ctypes.CDLL(dll_path)  # Adjust path as needed
@@ -52,6 +53,7 @@ class SLMController:
             raise ValueError("offset must be a non-negative integer")
         
         print("Inserting holograms at offset:", offset)
+        holograms = np.ascontiguousarray(holograms)
         holograms_ptr = holograms.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8))
         num_holograms = holograms.shape[0] if holograms.ndim == 3 else 1
         ok = self.lib.InsertSLMHologram(holograms_ptr, num_holograms, offset)

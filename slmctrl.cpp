@@ -187,6 +187,9 @@ int UI()
 	ImGui::CreateContext();
 	ImPlot::CreateContext();
 
+	// print show_debug_window
+	printf("show_debug_window: %d\n", show_debug_window);
+
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	if (show_debug_window) io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
@@ -446,6 +449,7 @@ int UI()
 void StartUI(unsigned int number_of_holograms, bool debug_window = false) {
 
 	MAX_HOLOGRAMS = number_of_holograms;
+	show_debug_window = debug_window;
 
 	if (running) {
 		StopUI();
@@ -463,6 +467,7 @@ void StartUI(unsigned int number_of_holograms, bool debug_window = false) {
 	for (unsigned int i = 0; i < MAX_HOLOGRAMS; i++) {
 		hologram_order[i] = i;
 	};
+
 
 #ifndef SLM_DEBUG
 	std::cout << "Starting UI thread" << std::endl;
