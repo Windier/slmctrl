@@ -86,7 +86,7 @@ bool windowed = true;
 long long t0 = 0;
 
 bool camera_trigger = false;
-bool show_debug_window = true;
+bool show_debug_window = false;
 
 std::chrono::duration<double> elapsed_content;
 std::chrono::duration<double> elapsed_buffer;
@@ -196,7 +196,8 @@ int UI()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 	io.ConfigDockingWithShift = true; // Enable docking with shift key
-	io.ConfigFlags& ImGuiConfigFlags_ViewportsEnable ? std::cout << "true" << std::endl : std::cout << "false" << std::endl;
+	//io.ConfigFlags& ImGuiConfigFlags_ViewportsEnable ? std::cout << "true" << std::endl : std::cout << "false" << std::endl;
+	//
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
@@ -451,11 +452,14 @@ void StartUI(unsigned int number_of_holograms, bool debug_window = false) {
 	MAX_HOLOGRAMS = number_of_holograms;
 	show_debug_window = debug_window;
 
+	show_debug_window = debug_window;
+
 	if (running) {
 		StopUI();
-		StartUI(number_of_holograms);
+		StartUI(number_of_holograms, debug_window);
 		return;
 	};
+
 
 	running = true;
 	slm_image_ptr = nullptr;
